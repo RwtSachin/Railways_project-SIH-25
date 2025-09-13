@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR / Barcode Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #reader {
+      width: 350px;
+      margin: auto;
+    }
+    .scan-result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <p>hiiiiii</p>
+  <h2>🔍 Scan QR / Barcode</h2>
+  <div id="reader"></div>
+  <div id="result" class="scan-result"></div>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      // ✅ Show result
+      document.getElementById("result").innerHTML =
+        "✅ Scanned: " + decodedText;
+
+      // ✅ Redirect to fitting item detail page
+      window.location.href = "/predict_item/" + decodedText;
+    }
+
+    function onScanFailure(error) {
+      // Optional: console.log("Scan error:", error);
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", 
+      { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+  </script>
+</body>
+</html>

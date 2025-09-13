@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dataset Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+  <h2>📂 Dataset Management</h2>
+
+  <!-- Upload new dataset -->
+  <form action="/upload_dataset" method="POST" enctype="multipart/form-data" class="mb-4">
+    <label class="form-label">Upload Dataset (CSV/XLSX)</label>
+    <input type="file" name="dataset" class="form-control mb-2" required>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+
+  <h4>Available Datasets</h4>
+  <ul class="list-group">
+    {% for f in files %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ f }}
+        <div>
+          <a href="/train?file={{ f }}" class="btn btn-success btn-sm">Train</a>
+          <a href="/preview_dataset/{{ f }}" class="btn btn-secondary btn-sm">Preview</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+</body>
+</html>

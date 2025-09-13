@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Item Prediction</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background-color: #f8f9fa; }
+    .prediction-card { max-width: 500px; margin: 20px auto; }
+    .risk-Low { border-left: 8px solid green; }
+    .risk-Medium { border-left: 8px solid orange; }
+    .risk-High { border-left: 8px solid red; }
+    .progress { height: 25px; }
+    .mini-chart { max-width: 300px; margin: auto; }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <h2 class="text-center mb-4">📌 Prediction for Item <b>{{ item_id }}</b></h2>
+
+  <!-- Prediction Summary Card -->
+  <div class="card shadow-sm prediction-card risk-{{ risk }}">
+    <div class="card-body text-center">
+      <h5 class="card-title">Predicted Risk Level</h5>
+      <p class="fs-3 fw-bold text-{{ 'success' if risk=='Low' else 'warning' if risk=='Medium' else 'danger' }}">
+        {{ risk }}
+      </p>
+      <p class="fs-5">Failure Probability: <b>{{ probability }}</b></p>
+      <p class="fs-6">Predicted Outcome: {{ prediction }}</p>
+
+      <!-- Progress Bar for Probability -->
+      <div class="progress my-3">
+        <div class="progress-bar bg-{{ 'success' if risk=='Low' else 'warning' if risk=='Medium' else 'danger' }}" 
+             role="progressbar" style="width: {{ probability*100 }}%">
+          {{ (probability*100)|round(1) }}%
+        </div>
+      </div>
+
+      <!-- Report Button -->
+      <a href="/report_issue/{{ item_id }}" class="btn btn-danger mt-2">
+        🚨 Report to TMS Authority
+      </a>
+    </div>
+  </div>
+
+  <!-- Visuals Row -->
+  <div class="row my-4">
+    <!-- Pie Chart -->
+    <div class="col-md-6 text-center">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Probability Distribution</h6>
+          <div class="mini-chart">
+            <canvas id="probChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Badges -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h6 class="card-title">Risk Scale</h6>
+          <span class="badge bg-success fs-6 m-1">Low: &lt; 0.33</span>
+          <span class="badge bg-warning text-dark fs-6 m-1">Medium: 0.33 - 0.66</span>
+          <span class="badge bg-danger fs-6 m-1">High: &gt; 0.66</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Item Details -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">📋 Item Details</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <tbody>
+          {% for key, value in details.items() %}
+            <tr>
+              <th>{{ key }}</th>
+              <td>{{ value }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const ctx = document.getElementById('probChart').getContext('2d');
+  const prob = {{ probability }};
+  const chart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Failure Probability', 'Safe Probability'],
+      datasets: [{
+        data: [prob, 1 - prob],
+        backgroundColor: ['#dc3545', '#28a745']
+      }]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+</script>
+</body>
+</html>

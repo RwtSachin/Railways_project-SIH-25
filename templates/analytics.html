@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: auto; font-family: Arial, sans-serif;">
+
+  <h2 style="margin: 20px 0; text-align: center;">AI Analytics Dashboard</h2>
+
+  {% if counts %}
+    <!-- Summary Cards -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-bottom: 30px;">
+      <div style="flex: 1; min-width: 200px; background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3>Total Items</h3>
+        <p style="font-size: 24px; font-weight: bold;">{{ total }}</p>
+      </div>
+      <div style="flex: 1; min-width: 200px; background: #e8f5e9; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3>Low Risk</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #388e3c;">{{ counts.Low }}</p>
+      </div>
+      <div style="flex: 1; min-width: 200px; background: #fffde7; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3>Medium Risk</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #fbc02d;">{{ counts.Medium }}</p>
+      </div>
+      <div style="flex: 1; min-width: 200px; background: #ffebee; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3>High Risk</h3>
+        <p style="font-size: 24px; font-weight: bold; color: #d32f2f;">{{ counts.High }}</p>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px;">
+      <!-- Bar Chart -->
+      <div style="flex: 1; min-width: 300px; background: #fafafa; padding: 20px; border-radius: 10px;">
+        <h3 style="text-align: center;">Risk Distribution (Bar)</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <!-- Pie Chart -->
+      <div style="flex: 1; min-width: 300px; background: #fafafa; padding: 20px; border-radius: 10px;">
+        <h3 style="text-align: center;">Risk Share (Pie)</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Sample Predictions Table -->
+    {% if predictions %}
+    <div style="margin: 30px 0;">
+      <h3 style="margin-bottom: 15px; text-align: center;">Sample Predictions</h3>
+      <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+        <thead style="background: #f5f5f5;">
+          <tr>
+            <th style="padding: 10px; border: 1px solid #ddd;">Item</th>
+            <th style="padding: 10px; border: 1px solid #ddd;">Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in predictions %}
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ item.name }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ item.risk }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- Link -->
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="/predict_all" style="background: #1976d2; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+        View Detailed Predictions
+      </a>
+    </div>
+
+  {% else %}
+    <!-- If no model trained -->
+    <div style="text-align: center; margin-top: 50px;">
+      <p style="font-size: 18px;">No model trained yet.</p>
+      <a href="/train" style="background: #388e3c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+        Train Model
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  {% if counts %}
+  // Bar Chart
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Low Risk', 'Medium Risk', 'High Risk'],
+      datasets: [{
+        label: 'Number of Items',
+        data: [{{ counts.Low }}, {{ counts.Medium }}, {{ counts.High }}],
+        backgroundColor: ['#4caf50', '#ffeb3b', '#f44336']
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+  });
+
+  // Pie Chart
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Low Risk', 'Medium Risk', 'High Risk'],
+      datasets: [{
+        data: [{{ counts.Low }}, {{ counts.Medium }}, {{ counts.High }}],
+        backgroundColor: ['#4caf50', '#ffeb3b', '#f44336']
+      }]
+    },
+    options: { responsive: true }
+  });
+  {% endif %}
+</script>
+{% endblock %}
