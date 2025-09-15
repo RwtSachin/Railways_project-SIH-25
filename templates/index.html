@@ -19,9 +19,30 @@
     .scanner-box { border: 2px dashed #0d6efd; border-radius: 10px; padding: 30px; background: #fff; }
     .scan-btn { font-size: 60px; color: #0d6efd; cursor: pointer; transition: 0.3s; }
     .scan-btn:hover { color: #6610f2; transform: scale(1.2); }
+
+/* Background Image with Blur */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://th.bing.com/th/id/R.84868b11d02d261edcc943664ec3880e?rik=K%2bF12oDYAgZh%2fQ&riu=http%3a%2f%2fwww.sa-transport.co.za%2ftrains%2fblue_train%2f34-929_930_blue-train_george_ra05.JPG&ehk=ObSAQmRcvoRWjKx1beejWCzm7inqdECb5dbtnXQH8Ko%3d&risl=&pid=ImgRaw&r=0') no-repeat center center fixed;
+  background-size: cover;
+  filter: blur(6px) brightness(0.8);
+  z-index: -1;
+}
+
+
+
   </style>
+
+
+
 </head>
 <body>
+  
 
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
@@ -114,7 +135,7 @@
     <div class="card mt-4 p-3 text-center">
       <h5><i class="fas fa-cube"></i> Fittings Database</h5>
       <p>View and explore all fitting details from the database.</p>
-      <a href="/predict_all" class="btn btn-warning btn-lg">
+      <a href="/predict_all" target="_blank" class="btn btn-warning btn-lg">
         <i class="fas fa-cube"></i> Fitting Items
       </a>
     </div>
@@ -189,11 +210,16 @@
     </div>
   </div>
 
+
+  
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.getElementById("scanButton").addEventListener("click", function() {
         window.location.href = "scan";
     });
   </script>
+
+  
 </body>
 </html>
